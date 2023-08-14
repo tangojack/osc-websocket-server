@@ -14,6 +14,7 @@
   "author": "Vinit Miranda",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.18.2",
     "osc-js": "^2.4.0"
   }
 }
