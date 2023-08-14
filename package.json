@@ -1,0 +1,18 @@
+{
+  "name": "osc-websocket-server",
+  "version": "1.0.0",
+  "description": "A sample websocket server that uses osc-js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "osc",
+    "websocket"
+  ],
+  "author": "Vinit Miranda",
+  "license": "ISC",
+  "dependencies": {
+    "osc-js": "^2.4.0"
+  }
+}
