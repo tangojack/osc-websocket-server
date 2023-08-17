@@ -1,24 +1,32 @@
-const OSC = require('osc-js')
+const WebSocket = require('ws')
 const express = require('express')
-
-const plugin = new OSC.WebsocketServerPlugin({ port: 9912 })
-const osc = new OSC({ plugin: plugin })
-
-// Send messages on regulat intervals to keep alive
-osc.on('open', () => {
-    setInterval(() => {
-        osc.send(new OSC.Message('/response', 'ping'))
-    }, 5000)
-})
-
-osc.open()
-
+const http = require("http");
 const app = express()
-const port = 3000
+const port = 443
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+  res.send('Hello World!')
 })
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+wss.on('connection', (ws) => {
+  console.log("Connection Opened");
+  console.log("Client size: ", wss.clients.size);
+  ws.on('message', (message) => {
+    console.log('received: %s', message);
+    broadcast(ws, message);
+  });
+});
+
+const broadcast = (ws, message) => {
+  wss.clients.forEach((client) => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send(message);
+      console.log("broadcasted")
+    }
+  });
+};
+
+server.listen(port);
+console.log(`Websocket app listening on port ${port}`)
