@@ -1,32 +1,19 @@
-const WebSocket = require('ws')
-const express = require('express')
-const http = require("http");
-const app = express()
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 const port = 443
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.sendFile(__dirname + '/index.html');
 })
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
-wss.on('connection', (ws) => {
-  console.log("Connection Opened");
-  console.log("Client size: ", wss.clients.size);
-  ws.on('message', (message) => {
-    console.log('received: %s', message);
-    broadcast(ws, message);
-  });
+io.on('connection', (socket) => {
+  console.log('a user connected');
 });
 
-const broadcast = (ws, message) => {
-  wss.clients.forEach((client) => {
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
-      client.send(message);
-      console.log("broadcasted")
-    }
-  });
-};
-
-server.listen(port);
-console.log(`Websocket app listening on port ${port}`)
+server.listen(443, () => {
+  console.log('listening on *:443');
+});
